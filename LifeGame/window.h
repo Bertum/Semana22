@@ -48,20 +48,24 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef WINDOW_H
+#define WINDOW_H
 
-#include <QApplication>
-#include <QSurfaceFormat>
+#include "helper.h"
 
-int main(int argc, char *argv[])
+#include <QWidget>
+
+//! [0]
+class Window : public QWidget
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    QSurfaceFormat fmt;
-    fmt.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(fmt);
+public:
+    Window();
 
-    Window window;
-    window.show();
-    return app.exec();
-}
+private:
+    Helper helper;
+};
+//! [0]
+
+#endif

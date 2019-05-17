@@ -48,20 +48,30 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef HELPER_H
+#define HELPER_H
 
-#include <QApplication>
-#include <QSurfaceFormat>
+#include <QBrush>
+#include <QFont>
+#include <QPen>
+#include <QWidget>
 
-int main(int argc, char *argv[])
+//! [0]
+class Helper
 {
-    QApplication app(argc, argv);
+public:
+    Helper();
 
-    QSurfaceFormat fmt;
-    fmt.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(fmt);
+public:
+    void paint(QPainter *painter, QPaintEvent *event, int elapsed);
 
-    Window window;
-    window.show();
-    return app.exec();
-}
+private:
+    QBrush background;
+    QBrush circleBrush;
+    QFont textFont;
+    QPen circlePen;
+    QPen textPen;
+};
+//! [0]
+
+#endif

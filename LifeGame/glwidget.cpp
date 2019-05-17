@@ -48,20 +48,37 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#include "glwidget.h"
+#include "helper.h"
 
-#include <QApplication>
-#include <QSurfaceFormat>
+#include <QPainter>
+#include <QTimer>
 
-int main(int argc, char *argv[])
+//! [0]
+GLWidget::GLWidget(Helper *helper, QWidget *parent)
+    : QOpenGLWidget(parent), helper(helper)
 {
-    QApplication app(argc, argv);
-
-    QSurfaceFormat fmt;
-    fmt.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(fmt);
-
-    Window window;
-    window.show();
-    return app.exec();
+    elapsed = 0;
+    setFixedSize(200, 200);
+    setAutoFillBackground(false);
 }
+//! [0]
+
+//! [1]
+void GLWidget::animate()
+{
+    elapsed = (elapsed + qobject_cast<QTimer*>(sender())->interval()) % 1000;
+    update();
+}
+//! [1]
+
+//! [2]
+void GLWidget::paintEvent(QPaintEvent *event)
+{
+    QPainter painter;
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    helper->paint(&painter, event, elapsed);
+    painter.end();
+}
+//! [2]

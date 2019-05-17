@@ -48,20 +48,31 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef WIDGET_H
+#define WIDGET_H
 
-#include <QApplication>
-#include <QSurfaceFormat>
+#include <QWidget>
 
-int main(int argc, char *argv[])
+//! [0]
+class Helper;
+
+class Widget : public QWidget
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    QSurfaceFormat fmt;
-    fmt.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(fmt);
+public:
+    Widget(Helper *helper, QWidget *parent);
 
-    Window window;
-    window.show();
-    return app.exec();
-}
+public slots:
+    void animate();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+private:
+    Helper *helper;
+    int elapsed;
+};
+//! [0]
+
+#endif
