@@ -3,10 +3,12 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QWidget>
+#include "cell.h"
 
 //! [0]
 Helper::Helper()
 {
+    this->length = 1000;
     QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
     gradient.setColorAt(0.0, Qt::white);
     gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39));
@@ -17,13 +19,41 @@ Helper::Helper()
     circlePen.setWidth(1);
     textPen = QPen(Qt::white);
     textFont.setPixelSize(50);
+    int cont=0;
+    //Set the cells by default
+    for (int x = 0; x < this->length; x++) {
+        for (int y = 0; y < this->length; y++) {
+            int randomValue = qrand() % this->length;
+            bool active = true;
+            if (randomValue==0){
+                active=false;
+            }
+            //this->cells[cont] = new Cell(x,y,active);
+            this->cells.push_back( new Cell(x,y,active));
+            cont++;
+        }
+   }
 }
 //! [0]
 
 //! [1]
 void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)
 {
-    painter->fillRect(event->rect(), background);
+    CheckCells();
+    //Draw the cells
+    int cont = 0;
+    for (int x = 0; x < this->length; x++) {
+        for (int y = 0; y < this->length; y++) {
+            painter->setPen(QColor(255, 0, 0));
+            painter->drawRect(this->cells[cont]->x ,this->cells[cont]->y, 1, 1);
+            if (cells[cont]->active) {
+                painter->setPen(QColor(0, 0, 255));
+                painter->drawRect(this->cells[cont]->x ,this->cells[cont]->y, 1, 1);
+            }
+        cont++;
+        }
+    }
+   /* painter->fillRect(event->rect(), background);
     painter->translate(100, 100);
 //! [1]
 
@@ -49,6 +79,60 @@ void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)
 //! [3]
     painter->setPen(textPen);
     painter->setFont(textFont);
-    painter->drawText(QRect(-50, -50, 100, 100), Qt::AlignCenter, QStringLiteral("Qt"));
+    painter->drawText(QRect(-50, -50, 100, 100), Qt::AlignCenter, QStringLiteral("Qt"));*/
 }
-//! [3]
+void Helper::CheckCells() {
+       int cont = 0;
+       for (int x = 0; x < this->length; x++) {
+           for (int y = 0; y < this->length; y++) {
+               int nAlive = 0;
+               //Compruebo si izq vive
+               if (cont > this->length && cont < ((this->length * this->length) - this->length - 1)) {
+                   if (this->cells[cont - 1]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont + 1]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont - 1 - this->length]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont - this->length]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont + 1 - this->length]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont - 1 + this->length]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont + this->length]->active) {
+                       nAlive++;
+                   }
+                   if (this->cells[cont + 1 + this->length]->active) {
+                       nAlive++;
+                   }
+               }
+               //Implementacion HighLife
+               //Celula viva con menos de dos vecinos muere
+               if (this->cells[cont]->active && nAlive < 2){
+                   this->cells[cont]->active = false;
+               }
+               //Celula viva con mas de tres vecinos muere
+               if (this->cells[cont]->active && nAlive > 3){
+                   this->cells[cont]->active = false;
+               }
+               //Celula viva con dos o tres vecinos no pasa na
+               if (this->cells[cont]->active && (nAlive == 2 || nAlive == 3)){
+                   //this->Cells[cont].pinturaCell.setColor(Color.BLUE);
+                   this->cells[cont]->active = true;
+               }
+               //Celula MUERTA con tres vecinos o seis, vive
+               if (this->cells[cont]->active && (nAlive == 3 || nAlive == 6)){
+                   //this->Cells[cont].pinturaCell.setColor(Color.GREEN);
+                   this->cells[cont]->active = true;
+               }
+               cont++;
+           }
+       }
+   }

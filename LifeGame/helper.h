@@ -5,8 +5,8 @@
 #include <QFont>
 #include <QPen>
 #include <QWidget>
+#include "cell.h"
 
-//! [0]
 class Helper
 {
 public:
@@ -14,14 +14,15 @@ public:
 
 public:
     void paint(QPainter *painter, QPaintEvent *event, int elapsed);
-
+    void CheckCells();
 private:
     QBrush background;
     QBrush circleBrush;
     QFont textFont;
     QPen circlePen;
     QPen textPen;
+    int length;
+    QList<Cell *> cells;
 };
-//! [0]
 
 #endif
