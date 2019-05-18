@@ -79,7 +79,7 @@ Helper::Helper()
     for (int x = 0; x < length; x++) {
         for (int y = 0; y < length; y++) {
             bool active = true;
-            if ((double(rand()) / (double(RAND_MAX) + 1.0))<=0.4){
+            if ((double(rand()) / (double(RAND_MAX) + 1.0))<=0.5){
                 active=false;
             }
             cells[x][y] = new Cell(x,y,active);
